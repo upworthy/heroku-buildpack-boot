@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# usage: bin/detect BUILD_DIR
+
+echo "boot"

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# usage: bin/compile BUILD_DIR CACHE_DIR ENV_DIR
+
+# sed -l basically makes sed replace and buffer through stdin to
+# stdout so you get updates while the command runs and don't wait for
+# the end.
+# e.g. npm install | indent
+# lifted from: https://github.com/heroku/heroku-buildpack-jvm-common
+indent() {
+  # if an arg is given it's a flag indicating we shouldn't indent the
+  # first line, so use :+ to tell SED accordingly if that parameter is
+  # set, otherwise null string for no range selector prefix (it
+  # selects from line 2 onwards and then every 1st line, meaning all
+  # lines)
+  c="${1:+"2,999"} s/^/       /"
+  case $(uname) in
+    Darwin) sed -l "$c";; # mac/bsd sed: -l buffers on line boundaries
+    *)      sed -u "$c";; # unix/gnu sed: -u unbuffered (arbitrary) chunks of data
+  esac
+}
+
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+cache=$(cd "$2/" && pwd)
+env_dir="$3"
+
+if [[ -f "$cache/boot" ]]
+then
+    echo "-----> Using cached version of boot"
+else
+    echo -n "-----> Downloading boot..."
+    curl -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/2.0.0/boot.sh
+    chmod +x "$cache/boot.sh"
+    echo " done"
+    echo "-----> Bootstrapping..."
+    BOOT_COLOR=off BOOT_LOCAL_REPO="$cache/.m2/repository" "$cache/boot.sh" help 2>&1 | grep Retrieving | indent
+    BOOT_COLOR=off BOOT_LOCAL_REPO="$cache/.m2/repository" "$cache/boot.sh" -V 2>&1 | indent
+    mv "$cache/boot.sh" "$cache/boot"
+    echo "-----> Done bootstrapping"
+fi
+
+echo -n "-----> Copying boot..."
+cp -R "$cache/.m2" "$build/.m2"
+mkdir -p "$build/bin"
+cp "$cache/boot" "$build/bin/"
+echo " done"
+
+mkdir -p "$build/.profile.d"
+echo 'PATH=$PATH:$HOME/bin' > "$build/.profile.d/boot-env.sh"
