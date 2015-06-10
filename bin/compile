@@ -27,7 +27,7 @@ cache=$(cd "$2/" && pwd)
 env_dir="$3"
 
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
-export BOOT_JVM_OPTIONS="-Xmx400m -Xss512k"
+export BOOT_JVM_OPTIONS="-Xmx384m -Xss512k"
 
 if [[ -f "$cache/boot" ]]
 then
@@ -71,4 +71,24 @@ cp -R "$cache/.m2" "$build/.m2"
 echo " done"
 
 mkdir -p "$build/.profile.d"
-echo 'PATH=$PATH:$HOME/bin' > "$build/.profile.d/boot-env.sh"
+cat << EOF > "$build/.profile.d/boot-env.sh"
+export PATH="\$HOME/bin:\$PATH"
+
+limit=\$(ulimit -u)
+case \$limit in
+256)   # 1X Dyno
+  default_java_opts="-Xmx384m -Xss512k"
+  ;;
+512)   # 2X Dyno
+  default_java_opts="-Xmx768m"
+  ;;
+32768) # PX Dyno
+  default_java_opts="-Xmx4g"
+  ;;
+*)
+  default_java_opts="-Xmx384m -Xss512k"
+  ;;
+esac
+
+export BOOT_JVM_OPTIONS=\${BOOT_JVM_OPTIONS:-"\${default_java_opts} -Dfile.encoding=UTF-8"}
+EOF
