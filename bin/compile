@@ -24,6 +24,9 @@ build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 env_dir="$3"
 
+export BOOT_LOCAL_REPO="$cache/.m2/repository"
+export BOOT_JVM_OPTIONS="-Xmx400m -Xss512k"
+
 if [[ -f "$cache/boot" ]]
 then
     echo "-----> Using cached version of boot"
@@ -33,17 +36,19 @@ else
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
-    export BOOT_JVM_OPTIONS="-Xmx300m -Xss512k"
-    BOOT_COLOR=off BOOT_LOCAL_REPO="$cache/.m2/repository" "$cache/boot.sh" help 2>&1 | grep Retrieving | indent
-    BOOT_COLOR=off BOOT_LOCAL_REPO="$cache/.m2/repository" "$cache/boot.sh" -V 2>&1 | indent
+    "$cache/boot.sh" -C help 2>&1 | grep Retrieving | indent
+    "$cache/boot.sh" -C -V 2>&1 | indent
     mv "$cache/boot.sh" "$cache/boot"
     echo "-----> Done bootstrapping"
 fi
 
 echo -n "-----> Copying boot..."
-cp -R "$cache/.m2" "$build/.m2"
 mkdir -p "$build/bin"
 cp "$cache/boot" "$build/bin/"
+echo " done"
+
+echo -n "-----> Copying jars..."
+cp -R "$cache/.m2" "$build/.m2"
 echo " done"
 
 mkdir -p "$build/.profile.d"
