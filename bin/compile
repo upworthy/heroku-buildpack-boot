@@ -61,10 +61,9 @@ then
 fi
 
 boot_cmd=${BOOT_CMD:-"boot build"}
-echo "-----> Running \"$boot_cmd\""
+echo "-----> Running: $boot_cmd"
 export PATH="$build/bin:$PATH"
 (cd $build && $boot_cmd 2>&1 | indent)
-echo "-----> \"$boot_cmd\" is done"
 
 echo -n "-----> Copying jars..."
 cp -R "$cache/.m2" "$build/.m2"
