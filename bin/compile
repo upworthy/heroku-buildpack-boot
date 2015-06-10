@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # usage: bin/compile BUILD_DIR CACHE_DIR ENV_DIR
 
+set -e -o pipefail
+
 # sed -l basically makes sed replace and buffer through stdin to
 # stdout so you get updates while the command runs and don't wait for
 # the end.
@@ -46,6 +48,23 @@ echo -n "-----> Copying boot..."
 mkdir -p "$build/bin"
 cp "$cache/boot" "$build/bin/"
 echo " done"
+
+if [[ -d "$env_dir" ]]
+then
+    for key in BOOT_CMD
+    do
+        if [[ -f "$env_dir/$key" ]]
+        then
+            export "$key=$(cat "$env_dir/$key")"
+        fi
+    done
+fi
+
+boot_cmd=${BOOT_CMD:-"boot build"}
+echo "-----> Running \"$boot_cmd\""
+export PATH="$build/bin:$PATH"
+(cd $build && $boot_cmd 2>&1 | indent)
+echo "-----> \"$boot_cmd\" is done"
 
 echo -n "-----> Copying jars..."
 cp -R "$cache/.m2" "$build/.m2"
