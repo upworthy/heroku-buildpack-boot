@@ -45,8 +45,8 @@ else
 fi
 
 echo -n "-----> Copying boot..."
-mkdir -p "$build/bin"
-cp "$cache/boot" "$build/bin/"
+mkdir -p "$build/.bootbin"
+cp "$cache/boot" "$build/.bootbin/"
 echo " done"
 
 if [[ -d "$env_dir" ]]
@@ -62,7 +62,7 @@ fi
 
 boot_cmd=${BOOT_CMD:-"boot build"}
 echo "-----> Running: $boot_cmd"
-export PATH="$build/bin:$PATH"
+export PATH="$build/.bootbin:$PATH"
 (cd $build && $boot_cmd 2>&1 | indent)
 
 echo -n "-----> Copying jars..."
@@ -71,7 +71,7 @@ echo " done"
 
 mkdir -p "$build/.profile.d"
 cat << EOF > "$build/.profile.d/boot-env.sh"
-export PATH="\$HOME/bin:\$PATH"
+export PATH="\$HOME/.bootbin:\$PATH"
 
 limit=\$(ulimit -u)
 case \$limit in
