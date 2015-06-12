@@ -51,7 +51,7 @@ echo " done"
 
 if [[ -d "$env_dir" ]]
 then
-    for key in BOOT_CMD
+    for key in BOOTBUILD_CMD
     do
         if [[ -f "$env_dir/$key" ]]
         then
@@ -64,11 +64,11 @@ fi
 # file defines 'build' task that takes care of all sorts of build-time
 # concerns (e.g. pulling dependencies from repos eagerly). If a more
 # complicated logic is desired at build-time, it can be overriden by
-# specifying BOOT_CMD var that contains, say, a more complex boot
+# specifying BOOTBUILD_CMD var that contains, say, a more complex boot
 # pipeline. For instance:
-# BOOT_CMD="boot foo -x -- bar --blah -q -- qaz"
+# BOOTBUILD_CMD="boot foo -x -- bar --blah -q -- qaz"
 
-boot_cmd=${BOOT_CMD:-"boot build"}
+boot_cmd=${BOOTBUILD_CMD:-"boot build"}
 echo "-----> Running: $boot_cmd"
 export PATH="$build/.bootbin:$PATH"
 (cd $build && $boot_cmd 2>&1 | indent)
