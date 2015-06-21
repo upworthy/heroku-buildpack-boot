@@ -17,3 +17,12 @@ rebuild of your app. So it's easy to get into a situation where your
 build is broken, but you don't notice it until later when you
 push. For this reason it's recommended to take care with this feature
 and always push after changing a whitelisted config value.
+
+## Credits
+
+Thanks to the authors of various official Heroku buildpacks for
+providing excellent documentation and clearly written source code. In
+particular, config var whitelisting has been inspired by
+[Clojure buildpack.][1]
+
+[1]: https://github.com/heroku/heroku-buildpack-clojure#configuration
