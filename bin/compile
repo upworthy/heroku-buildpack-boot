@@ -51,13 +51,26 @@ echo " done"
 
 if [[ -d "$env_dir" ]]
 then
-    for key in BOOTBUILD_CMD
+    # load the buildpack config vars
+    for key in BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST
     do
         if [[ -f "$env_dir/$key" ]]
         then
             export "$key=$(cat "$env_dir/$key")"
         fi
     done
+    # load the config vars allowed by BOOTBUILD_CONFIG_WHITELIST
+    # (inspired by the way Clojure buildpack does it)
+    if [[ -n "$BOOTBUILD_CONFIG_WHITELIST" ]]
+    then
+        for key in $BOOTBUILD_CONFIG_WHITELIST
+        do
+            if [[ -f "$env_dir/$key" ]]
+            then
+                export "$key=$(cat "$env_dir/$key")"
+            fi
+        done
+    fi
 fi
 
 # By default, there's an expectation that the project's build.boot
