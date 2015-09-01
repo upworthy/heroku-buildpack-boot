@@ -20,7 +20,16 @@ indent() {
     *)      sed -u "$c";; # unix/gnu sed: -u unbuffered (arbitrary) chunks of data
   esac
 }
+# from https://github.com/pandeiro/heroku-buildpack-boot/blob/master/bin/compile#L45-l50
+get_latest_boot_version() {
+  curl -s https://api.github.com/repos/boot-clj/boot/releases \
+    | grep 'download_url.*boot\.sh' \
+    | head -1 \
+    | awk -F '/' '{print $(NF-1)}'
+}
 
+BOOT_SH_VERSION=$(get_latest_boot_version)
+BOOT_SH_URL="https://github.com/boot-clj/boot/releases/download/${BOOT_SH_VERSION}/boot.sh"
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
@@ -34,7 +43,7 @@ then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
-    curl -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/2.0.0/boot.sh
+    curl -sLo "$cache/boot.sh" "${BOOT_SH_URL}"
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
