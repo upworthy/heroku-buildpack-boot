@@ -27,14 +27,14 @@ cache=$(cd "$2/" && pwd)
 env_dir="$3"
 
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
-export BOOT_JVM_OPTIONS="-Xmx384m -Xss512k"
+export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
 
 if [[ -f "$cache/boot" ]]
 then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
-    curl -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/2.0.0/boot.sh
+    curl -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/2.2.0/boot.sh
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
@@ -84,7 +84,7 @@ fi
 boot_cmd=${BOOTBUILD_CMD:-"boot build"}
 echo "-----> Running: $boot_cmd"
 export PATH="$build/.bootbin:$PATH"
-(cd $build && $boot_cmd 2>&1 | indent)
+(cd $build && $boot_cmd 2>&1 | indent); echo ""
 
 echo -n "-----> Copying jars..."
 cp -R "$cache/.m2" "$build/.m2"
