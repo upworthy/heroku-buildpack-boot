@@ -31,6 +31,25 @@ $ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-jvm-common
 $ heroku buildpacks:add https://github.com/upworthy/heroku-buildpack-boot
 ```
 
+## Testing
+
+You can either test this buildpack locally with Docker, or run the tests on
+Heroku. To use Heroku, create a new app with the testrunner buildpack, push the
+buildpack code, and then run the tests:
+
+```
+$ heroku create --buildpack https://github.com/heroku/heroku-buildpack-testrunner
+$ git push heroku master
+$ heroku run tests
+...
+------
+ALL OK
+239 SECONDS
+```
+
+To test with Docker, first build the [testrunner image](https://github.com/heroku/heroku-buildpack-testrunner)
+and then run the `test.sh` script.
+
 ## Credits
 
 Thanks to the authors of various official Heroku buildpacks for
