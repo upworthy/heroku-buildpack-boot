@@ -29,12 +29,33 @@ EOF
 EOF
 }
 
+_createSysProps() {
+  local jdkVersion=${1:-"1.8"}
+  cat > ${BUILD_DIR}/system.properties <<EOF
+java.runtime.version=${jdkVersion}
+EOF
+}
+
 #### Tests
 
 test_compile() {
   _createBaseProject
   compile
   assertCapturedSuccess
+  assertCaptured "Installing OpenJDK 1.8"
+  assertCaptured "Downloading boot"
+  assertCaptured "BOOT_VERSION=2.2.0"
+  assertCaptured "Adding uberjar entries"
+  assertCaptured "Running: boot build"
+  assertCaptured "Writing sample-0.0.1.jar"
+}
+
+test_compile_jdk7() {
+  _createBaseProject
+  _createSysProps "1.7"
+  compile
+  assertCapturedSuccess
+  assertCaptured "Installing OpenJDK 1.7"
   assertCaptured "Downloading boot"
   assertCaptured "BOOT_VERSION=2.2.0"
   assertCaptured "Adding uberjar entries"

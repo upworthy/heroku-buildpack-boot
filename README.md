@@ -18,17 +18,15 @@ build is broken, but you don't notice it until later when you
 push. For this reason it's recommended to take care with this feature
 and always push after changing a whitelisted config value.
 
-## JDK version
+## JDK Version
 
-This buildpack does not install the JDK. Instead, it uses the default JDK
-on the Heroku Cedar stack, which is JDK 7. If you'd prefer to use JDK 8, you
-can suplement this buildpack with the jvm-common buildpack by running these
-commands:
+By default you will get OpenJDK 1.8. To use a different version, you
+can commit a `system.properties` file to your app.
 
-```
-$ heroku buildpacks:clear
-$ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-jvm-common
-$ heroku buildpacks:add https://github.com/upworthy/heroku-buildpack-boot
+```sh-session
+$ echo "java.runtime.version=1.7" > system.properties
+$ git add system.properties
+$ git commit -m "JDK 7"
 ```
 
 ## Testing
@@ -49,6 +47,8 @@ ALL OK
 
 To test with Docker, first build the [testrunner image](https://github.com/heroku/heroku-buildpack-testrunner)
 and then run the `test.sh` script.
+
+**NOTE**: The `tests-with-caching` target fails when downloading the boot.sh binary.
 
 ## Credits
 

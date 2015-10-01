@@ -26,6 +26,20 @@ build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 env_dir="$3"
 
+# Load common JVM functionality from https://github.com/heroku/heroku-buildpack-jvm-common
+JVM_COMMON_BUILDPACK="https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz"
+mkdir -p /tmp/jvm-common
+curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
+. /tmp/jvm-common/bin/util
+. /tmp/jvm-common/bin/java
+
+# Install JDK
+javaVersion=$(detect_java_version ${build})
+echo -n "-----> Installing OpenJDK ${javaVersion}..."
+install_java ${build} ${javaVersion}
+jdk_overlay ${build}
+echo "done"
+
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
 export BOOT_VERSION=2.2.0
@@ -35,7 +49,7 @@ then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
-    curl -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/$BOOT_VERSION/boot.sh
+    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/$BOOT_VERSION/boot.sh
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
@@ -95,22 +109,4 @@ mkdir -p "$build/.profile.d"
 cat << EOF > "$build/.profile.d/boot-env.sh"
 export PATH="\$HOME/.bootbin:\$PATH"
 export BOOT_VERSION=$BOOT_VERSION
-
-limit=\$(ulimit -u)
-case \$limit in
-256)   # 1X Dyno
-  default_java_opts="-Xmx384m -Xss512k"
-  ;;
-512)   # 2X Dyno
-  default_java_opts="-Xmx768m"
-  ;;
-32768) # PX Dyno
-  default_java_opts="-Xmx4g"
-  ;;
-*)
-  default_java_opts="-Xmx384m -Xss512k"
-  ;;
-esac
-
-export BOOT_JVM_OPTIONS=\${BOOT_JVM_OPTIONS:-"\${default_java_opts} -Dfile.encoding=UTF-8"}
 EOF
