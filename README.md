@@ -1,4 +1,4 @@
-Build status: [![Circle CI](https://circleci.com/gh/upworthy/heroku-buildpack-boot.svg?style=svg)](https://circleci.com/gh/upworthy/heroku-buildpack-boot)
+[![Circle CI](https://circleci.com/gh/upworthy/heroku-buildpack-boot.svg?style=svg)](https://circleci.com/gh/upworthy/heroku-buildpack-boot)
 
 ## Configuration
 
