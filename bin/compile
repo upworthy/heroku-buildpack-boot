@@ -67,7 +67,7 @@ echo " done"
 if [[ -d "$env_dir" ]]
 then
     # load the buildpack config vars
-    for key in BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST
+    for key in BOOTBUILD_CMD BOOTBUILD_EXCLUDE_M2 BOOTBUILD_CONFIG_WHITELIST
     do
         if [[ -f "$env_dir/$key" ]]
         then
@@ -101,9 +101,12 @@ echo "-----> Running: $boot_cmd"
 export PATH="$build/.bootbin:$PATH"
 (cd $build && $boot_cmd 2>&1 | indent); echo ""
 
-echo -n "-----> Copying jars..."
-cp -R "$cache/.m2" "$build/.m2"
-echo " done"
+if [[ -z "$BOOTBUILD_EXCLUDE_M2" ]]
+then
+    echo -n "-----> Copying jars..."
+    cp -R "$cache/.m2" "$build/.m2"
+    echo " done"
+fi
 
 mkdir -p "$build/.profile.d"
 cat << EOF > "$build/.profile.d/boot-env.sh"
