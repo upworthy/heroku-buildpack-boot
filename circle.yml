@@ -1,0 +1,9 @@
+dependencies:
+  override:
+    - curl --silent https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz | tar xz -C /tmp/
+    - git clone -q https://github.com/ryanbrainard/heroku-buildpack-testrunner.git /tmp/testrunner
+test:
+  override:
+    - /tmp/testrunner/bin/run .:
+        environment:
+           SHUNIT_HOME: /tmp/shunit2-2.1.6
