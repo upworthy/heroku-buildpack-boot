@@ -1,3 +1,5 @@
+Build status: [![Circle CI](https://circleci.com/gh/upworthy/heroku-buildpack-boot.svg?style=svg)](https://circleci.com/gh/upworthy/heroku-buildpack-boot)
+
 ## Configuration
 
 By default, there's an expectation that the app's `build.boot`

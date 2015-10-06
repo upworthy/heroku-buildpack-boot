@@ -40,12 +40,20 @@ install_java ${build} ${javaVersion}
 jdk_overlay ${build}
 echo "done"
 
+if [[ -d "$env_dir" ]]; then
+    # load the buildpack config vars
+    for key in BOOT_VERSION BOOTBUILD_CMD BOOTBUILD_EXCLUDE_M2 BOOTBUILD_CONFIG_WHITELIST; do
+        if [[ -f "$env_dir/$key" ]]; then
+            export "$key=$(cat "$env_dir/$key")"
+        fi
+    done
+fi
+
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
-export BOOT_VERSION=2.2.0
+export BOOT_VERSION=${BOOT_VERSION:-2.2.0}
 
-if [[ -f "$cache/boot" ]]
-then
+if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
@@ -64,24 +72,12 @@ mkdir -p "$build/.bootbin"
 cp "$cache/boot" "$build/.bootbin/"
 echo " done"
 
-if [[ -d "$env_dir" ]]
-then
-    # load the buildpack config vars
-    for key in BOOTBUILD_CMD BOOTBUILD_EXCLUDE_M2 BOOTBUILD_CONFIG_WHITELIST
-    do
-        if [[ -f "$env_dir/$key" ]]
-        then
-            export "$key=$(cat "$env_dir/$key")"
-        fi
-    done
+if [[ -d "$env_dir" ]]; then
     # load the config vars allowed by BOOTBUILD_CONFIG_WHITELIST
     # (inspired by the way Clojure buildpack does it)
-    if [[ -n "$BOOTBUILD_CONFIG_WHITELIST" ]]
-    then
-        for key in $BOOTBUILD_CONFIG_WHITELIST
-        do
-            if [[ -f "$env_dir/$key" ]]
-            then
+    if [[ -n "$BOOTBUILD_CONFIG_WHITELIST" ]]; then
+        for key in $BOOTBUILD_CONFIG_WHITELIST; do
+            if [[ -f "$env_dir/$key" ]]; then
                 export "$key=$(cat "$env_dir/$key")"
             fi
         done
