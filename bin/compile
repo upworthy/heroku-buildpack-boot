@@ -42,7 +42,7 @@ echo "done"
 
 if [[ -d "$env_dir" ]]; then
     # load the buildpack config vars
-    for key in BOOT_VERSION BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST; do
+    for key in BOOT_BIN_VERSION BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST; do
         if [[ -f "$env_dir/$key" ]]; then
             export "$key=$(cat "$env_dir/$key")"
         fi
@@ -51,13 +51,13 @@ fi
 
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
-export BOOT_VERSION=${BOOT_VERSION:-2.2.0}
+export BOOT_BIN_VERSION=${BOOT_BIN_VERSION:-latest}
 
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
-    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/$BOOT_VERSION/boot.sh
+    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot-bin/releases/download/$BOOT_BIN_VERSION/boot.sh
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
@@ -104,5 +104,4 @@ echo " done"
 mkdir -p "$build/.profile.d"
 cat << EOF > "$build/.profile.d/boot-env.sh"
 export PATH="\$HOME/.bootbin:\$PATH"
-export BOOT_VERSION=$BOOT_VERSION
 EOF
