@@ -51,13 +51,13 @@ fi
 
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
-export BOOT_VERSION=${BOOT_VERSION:-2.2.0}
+export BOOT_VERSION=${BOOT_VERSION:-2.6.0}
 
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
-    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/$BOOT_VERSION/boot.sh
+    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot-bin/releases/download/2.5.2/boot.sh
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
