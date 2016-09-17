@@ -51,7 +51,7 @@ fi
 
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
-export BOOT_VERSION=${BOOT_VERSION:-2.2.0}
+export BOOT_VERSION=${BOOT_VERSION:-2.6.0}
 if [[ -d "$env_dir" ]]; then
   # load the config vars allowed by BOOTBUILD_CONFIG_WHITELIST
   # (inspired by the way Clojure buildpack does it)
