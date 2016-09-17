@@ -52,6 +52,17 @@ fi
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
 export BOOT_VERSION=${BOOT_VERSION:-2.2.0}
+if [[ -d "$env_dir" ]]; then
+  # load the config vars allowed by BOOTBUILD_CONFIG_WHITELIST
+  # (inspired by the way Clojure buildpack does it)
+  if [[ -n "$BOOTBUILD_CONFIG_WHITELIST" ]]; then
+    for key in $BOOTBUILD_CONFIG_WHITELIST; do
+      if [[ -f "$env_dir/$key" ]]; then
+        export "$key=$(cat "$env_dir/$key")"
+      fi
+    done
+  fi
+fi
 
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
@@ -71,18 +82,6 @@ echo -n "-----> Copying boot..."
 mkdir -p "$build/.bootbin"
 cp "$cache/boot" "$build/.bootbin/"
 echo " done"
-
-if [[ -d "$env_dir" ]]; then
-    # load the config vars allowed by BOOTBUILD_CONFIG_WHITELIST
-    # (inspired by the way Clojure buildpack does it)
-    if [[ -n "$BOOTBUILD_CONFIG_WHITELIST" ]]; then
-        for key in $BOOTBUILD_CONFIG_WHITELIST; do
-            if [[ -f "$env_dir/$key" ]]; then
-                export "$key=$(cat "$env_dir/$key")"
-            fi
-        done
-    fi
-fi
 
 # By default, there's an expectation that the project's build.boot
 # file defines 'build' task that takes care of all sorts of build-time
