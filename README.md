@@ -11,6 +11,18 @@ pipeline. For instance:
 
     BOOTBUILD_CMD="boot foo -x -- bar --blah -q -- qaz"
 
+`boot` executable version is pinned and will be updated from to time
+to the most recent one. It can be controlled by setting `BOOT_SH_VERSION`
+to `latest` or to a desired version. For example:
+
+    BOOT_SH_VERSION=2.4.2
+
+`boot-clj` framework version used by this buildpack is pinned and
+will be updated from to time to the most recent one. It can be set
+to a desired version by setting `BOOT_VERSION`. For example:
+
+    BOOT_VERSION=2.5.5
+
 To expose more config vars at build-time, set a
 `BOOTBUILD_CONFIG_WHITELIST` config var containing a space-delimited
 list of config var names. Note that this can result in unpredictable

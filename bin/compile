@@ -42,7 +42,7 @@ echo "done"
 
 if [[ -d "$env_dir" ]]; then
     # load the buildpack config vars
-    for key in BOOT_VERSION BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST; do
+    for key in BOOT_SH_VERSION BOOT_VERSION BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST; do
         if [[ -f "$env_dir/$key" ]]; then
             export "$key=$(cat "$env_dir/$key")"
         fi
@@ -51,7 +51,9 @@ fi
 
 export BOOT_LOCAL_REPO="$cache/.m2/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
+export BOOT_SH_VERSION=${BOOT_SH_VERSION:-2.5.2}
 export BOOT_VERSION=${BOOT_VERSION:-2.6.0}
+
 if [[ -d "$env_dir" ]]; then
   # load the config vars allowed by BOOTBUILD_CONFIG_WHITELIST
   # (inspired by the way Clojure buildpack does it)
@@ -67,10 +69,11 @@ fi
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
 else
-    echo -n "-----> Downloading boot..."
-    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot-bin/releases/download/2.5.2/boot.sh
+    boot_sh_url="https://github.com/boot-clj/boot-bin/releases/download/$BOOT_SH_VERSION/boot.sh"
+    echo "-----> Downloading $boot_sh_url ..."
+    curl --show-error -sLo "$cache/boot.sh" $boot_sh_url
     chmod +x "$cache/boot.sh"
-    echo " done"
+    echo "boot.sh is ready" | indent
     echo "-----> Bootstrapping..."
     "$cache/boot.sh" -C help 2>&1 | grep Retrieving | indent
     "$cache/boot.sh" -C -V 2>&1 | indent
