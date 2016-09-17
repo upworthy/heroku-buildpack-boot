@@ -70,7 +70,7 @@ if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
 else
     echo -n "-----> Downloading boot..."
-    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot/releases/download/$BOOT_VERSION/boot.sh
+    curl --show-error -sLo "$cache/boot.sh" https://github.com/boot-clj/boot-bin/releases/download/latest/boot.sh
     chmod +x "$cache/boot.sh"
     echo " done"
     echo "-----> Bootstrapping..."
