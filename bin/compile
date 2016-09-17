@@ -63,6 +63,8 @@ if [[ -d "$env_dir" ]]; then
     done
   fi
 fi
+echo "$BOOT_VERSION"
+echo "$BOOT_AS_ROOT"
 
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
