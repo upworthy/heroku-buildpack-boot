@@ -19,6 +19,8 @@ _createBaseProject() {
         (jar :main 'sample)))
 EOF
 
+  mkdir -p ${BUILD_DIR}/config
+  mkdir -p ${BUILD_DIR}/resources
   mkdir -p ${BUILD_DIR}/src/sample
 
   cat > ${BUILD_DIR}/src/sample/core.clj <<EOF
@@ -43,11 +45,11 @@ test_compile() {
   compile
   assertCapturedSuccess
   assertCaptured "Installing OpenJDK 1.8"
-  assertCaptured "Downloading boot"
-  assertCaptured "BOOT_VERSION=2.2.0"
+  assertCaptured "boot.sh is ready"
+  assertCaptured "BOOT_VERSION=2.6.0"
   assertCaptured "Adding uberjar entries"
   assertCaptured "Running: boot build"
-  assertCaptured "Writing sample-0.0.1.jar"
+  assertCaptured "Writing project.jar"
 }
 
 test_compile_jdk7() {
@@ -56,9 +58,9 @@ test_compile_jdk7() {
   compile
   assertCapturedSuccess
   assertCaptured "Installing OpenJDK 1.7"
-  assertCaptured "Downloading boot"
-  assertCaptured "BOOT_VERSION=2.2.0"
+  assertCaptured "boot.sh is ready"
+  assertCaptured "BOOT_VERSION=2.6.0"
   assertCaptured "Adding uberjar entries"
   assertCaptured "Running: boot build"
-  assertCaptured "Writing sample-0.0.1.jar"
+  assertCaptured "Writing project.jar"
 }
