@@ -64,6 +64,18 @@ and then run the `test.sh` script.
 
 **NOTE**: The `tests-with-caching` target fails when downloading the boot.sh binary.
 
+## Troubleshoorting
+
+You may get into situation where some wrong version of `boot` executable or the framework
+is cached in the app's build cache. You can purge this cache like so:
+
+    $ heroku plugins:install heroku-repo # <- one time installation step
+    $ heroku repo:purge_cache -a appname
+
+After a pruge, you will need to push another build of your app to have it fully
+rebuilt with the build cache in clean state. Alternatively, you can reset Heroku's
+app source code repository by doing `heroku repo:reset -a appname`.
+
 ## Credits
 
 Thanks to the authors of various official Heroku buildpacks for
