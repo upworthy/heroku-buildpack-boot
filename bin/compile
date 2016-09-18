@@ -75,6 +75,7 @@ else
     chmod +x "$cache/boot.sh"
     echo "boot.sh is ready" | indent
     echo "-----> Bootstrapping..."
+    export BOOT_AS_ROOT=yes
     "$cache/boot.sh" -C help 2>&1 | grep Retrieving | indent
     "$cache/boot.sh" -C -V 2>&1 | indent
     mv "$cache/boot.sh" "$cache/boot"
