@@ -72,6 +72,9 @@ export BOOT_VERSION=${BOOT_VERSION:-2.6.0}
 
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
+    if [[ -f "$cached_boot_home_dir/boot.properties" ]]; then
+      cat "$cached_boot_home_dir/boot.properties" | indent
+    fi
 else
     boot_sh_url="https://github.com/boot-clj/boot-bin/releases/download/$BOOT_SH_VERSION/boot.sh"
     echo "-----> Downloading $boot_sh_url ..."
