@@ -46,7 +46,6 @@ test_compile() {
   assertCapturedSuccess
   assertCaptured "Installing OpenJDK 1.8"
   assertCaptured "boot.sh is ready"
-  assertCaptured "BOOT_VERSION=2.6.0"
   assertCaptured "Adding uberjar entries"
   assertCaptured "Running: boot build"
   assertCaptured "Writing project.jar"
@@ -59,7 +58,6 @@ test_compile_jdk7() {
   assertCapturedSuccess
   assertCaptured "Installing OpenJDK 1.7"
   assertCaptured "boot.sh is ready"
-  assertCaptured "BOOT_VERSION=2.6.0"
   assertCaptured "Adding uberjar entries"
   assertCaptured "Running: boot build"
   assertCaptured "Writing project.jar"
