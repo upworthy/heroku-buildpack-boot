@@ -42,7 +42,7 @@ echo "done"
 
 if [[ -d "$env_dir" ]]; then
     # load the buildpack config vars
-    for key in BOOT_SH_VERSION BOOT_VERSION BOOTBUILD_CMD BOOTBUILD_CONFIG_WHITELIST; do
+    for key in BOOT_SH_VERSION BOOT_VERSION BOOTBUILD_CMD BOOTBUILD_EXCLUDE_M2 BOOTBUILD_CONFIG_WHITELIST; do
         if [[ -f "$env_dir/$key" ]]; then
             export "$key=$(cat "$env_dir/$key")"
         fi
@@ -116,7 +116,10 @@ echo "-----> Running: $boot_cmd"
 
 echo -n "-----> Copying boot artifacts..."
 rm -rf "$cached_boot_home_dir/cache/cache" "$cached_boot_home_dir/cache/tmp"
-cp -R "$cached_m2_dir" "$build/.m2"
+if [[ -z "$BOOTBUILD_EXCLUDE_M2" ]]
+then
+  cp -R "$cached_m2_dir" "$build/.m2"
+ fi
 cp -R "$cached_boot_home_dir" "$build/.boot"
 echo " done"
 
