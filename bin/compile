@@ -68,7 +68,7 @@ export BOOT_HOME="$cached_boot_home_dir"
 export BOOT_LOCAL_REPO="$cached_m2_dir/repository"
 export BOOT_JVM_OPTIONS="-Xmx768m -Xss512k"
 export BOOT_SH_VERSION=${BOOT_SH_VERSION:-2.5.2}
-export BOOT_VERSION=${BOOT_VERSION:-2.6.0}
+export BOOT_VERSION=${BOOT_VERSION:-2.7.0}
 
 if [[ -f "$cache/boot" ]]; then
     echo "-----> Using cached version of boot"
